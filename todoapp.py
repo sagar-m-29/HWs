@@ -1,9 +1,12 @@
 class Todo():
+    id=0
     def __init__(self, description):
         self.description = description
+        self.id = Todo.id
+        Todo.id = Todo.id + 1
     
     def __str__(self):
-        return self.description
+        return f"ID is: {self.id} Todo: {self.description}"
     
     def __eq__(self, other):
         return isinstance(other, Todo) and self.description == other.description 
@@ -15,14 +18,16 @@ class Todos():
         self.todos = []
 
     def add(self,todo_description):
-        todo_to_add = Todo(todo_description)
+
+        filtered_todos = list(filter(lambda todo: todo.description == todo_description, self.todos))
 
         if todo_description == "" or todo_description == " " or todo_description == "  ":
             print("Error, cannot add empty string.")
-        elif todo_to_add in self.todos:
+        elif len(filtered_todos) > 0:
             print("This is already in your todos.")
         else:
-            self.todos.append(Todo(todo_description))
+            todo_to_add = Todo(todo_description)
+            self.todos.append(todo_to_add)
             print(f"{todo_description} has been added to your todos.")
 
     def list_todos(self):
@@ -31,19 +36,21 @@ class Todos():
 
     def remove(self, removal_description):
 
-        todo_to_remove = Todo(removal_description)
+        for todo in self.todos:
+            if todo.description == removal_description:
+                self.todos.remove(todo)
+                print(f"{removal_description} has been checked off from your todos.")
 
-        if todo_to_remove in self.todos:
-            self.todos.remove(todo_to_remove)
-            print(f"{removal_description} has been checked off from your todos.")
-        else:
-            print(f"Error, '{removal_description}' is not in your todos.")
 
-        # WHY DOESN'T THIS WORK???
-        # if Todo(todo_description) in self.todos:
-        #     self.todos.remove(Todo(todo_description))
+        
+
+        # todo_to_remove = Todo(removal_description)
+
+        # if todo_to_remove in self.todos:
+        #     self.todos.remove(todo_to_remove)
+        #     print(f"{removal_description} has been checked off from your todos.")
         # else:
-        #     print(f"Error, {removal_description} is not in your todos.")
+        #     print(f"Error, '{removal_description}' is not in your todos.")
             
     def run(self):
         while True:
